@@ -1,15 +1,12 @@
 .container {
-  min-height: 100vh;
-  padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .main {
-  padding: 5rem 0;
+  padding: 24px 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -113,60 +110,13 @@
   margin-left: 0.5rem;
 }
 
-.button {
-  margin-top: 24px;
-  color: white;
-  background-color: #c20a25;
-  border: 0;
-  width: 360px;
-  height: 48px;
-  border-radius: 5px;
+.intro {
+  max-width: 960px;
+  text-align: center;
+  padding: 0 48px;
 
-  &__correct {
-    ::after {
-      margin-left: 8px;
-      content: "\2705";
-    }
-  }
-
-  &__incorrect {
-    ::after {
-      margin-left: 8px;
-      content: "\274C";
-      fill: white;
-    }
-  }
-
-  &:hover {
-    cursor: pointer;
-    background-color: darken(#c20a25, 10%);
-  }
-}
-
-.info {
-  position: absolute; 
-  top: 12px;
-  left: 36px;
-  padding: 12px 24px;
-}
-
-.score {
-  width: 36px;
-  height: 36px;
-  position: absolute;
-  top: 12px;
-  right: 36px;
-  background-color: #c20a25;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &::after {
-    position: absolute;
-    content: "\2705";
-    margin-right: 74px;
+  @media screen and (min-width: 768px) {
+    padding: 0;
   }
 }
 

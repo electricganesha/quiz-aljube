@@ -4,7 +4,7 @@ import GameOverView from '../components/GameOverView';
 export default function GameOver() {
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
+      <main>
        <GameOverView />
       </main>
     </div>

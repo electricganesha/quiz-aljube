@@ -13,7 +13,7 @@ const GameOverView = () => {
     return (
         <div className={styles.gameover}>
             <h1>Obrigado por teres jogado!</h1>
-            <p>Acertaste em {score} perguntas de um total de 2</p>
+            <p>Acertaste em {score} perguntas de um total de 10</p>
             <button className={styles.button} onClick={() => router.push("/")}>
             Voltar ao inicio
             </button>

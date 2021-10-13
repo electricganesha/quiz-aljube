@@ -1,12 +1,14 @@
-import styles from "../styles/Home.module.scss";
+import styles from "../styles/Quiz.module.scss";
 import { useCallback, useState, useEffect } from "react";
 import cc from "classcat";
 import  React from 'react';
 import router from "next/router";
+import Logo from '../components/Logo';
+import TriviaOverlay from '../components/TriviaOverlay'
 
 const QUESTION_TIMEOUT = 2000;
 
-export default function Home({ questionArray }) {
+export default function Home({ questionArray, host }) {
   if(!questionArray) {
     return null;
   }
@@ -16,6 +18,7 @@ export default function Home({ questionArray }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [hasClicked, setHasClicked] = useState(false);
   const [score, setScore] = useState(0);
+  const [isTriviaShowing, setIsTriviaShowing] = useState(false);
 
   useEffect(() => {
     setCurrentQuestion(0);
@@ -24,15 +27,11 @@ export default function Home({ questionArray }) {
 
   const onButtonPress = useCallback(
     (answer) => {
+      
       setHasClicked(true);
       clearAnswers();
-
-      if (answer === questionArray[currentQuestion].correct) {
-        setCorrectAnswer(answer);
-        return;
-      }
-
-      setIncorrectAnswer(answer);
+      checkAnswer(questionArray[currentQuestion].id, answer);
+      
       return;
     },
     [currentQuestion]
@@ -44,10 +43,14 @@ export default function Home({ questionArray }) {
     }
 
     const timeout = setTimeout(async function(){
-      if(correctAnswer) {
+      if(correctAnswer !== null) {
         await addPointToScore();
+      }
 
-      } 
+      if(questionArray[currentQuestion].hasTrivia) {
+        setIsTriviaShowing(true);
+        return;
+      }
       
       goToNextQuestion();
     }, QUESTION_TIMEOUT)
@@ -77,31 +80,46 @@ export default function Home({ questionArray }) {
     setIncorrectAnswer(null);
   }, []);
 
+  const checkAnswer = useCallback(async (id, answer) => {
+    const res = await fetch(`${host}/api/answer/${id}`);
+    const remoteAnswer = await res.json();
+
+    if (answer === remoteAnswer) {
+      setCorrectAnswer(answer);
+      return;
+    }
+
+    setIncorrectAnswer(answer);
+  }, []);
+
+  const onCloseTriviaOverlay = useCallback(async () => {
+    setIsTriviaShowing(false);
+    goToNextQuestion();
+  });
+
+  if(isTriviaShowing) {
+    return ( 
+      <TriviaOverlay id={questionArray[currentQuestion].id} host={host} onCloseTriviaOverlay={onCloseTriviaOverlay}/>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>
+        <div className={styles.questionHeader}>
         <div className={styles.info}>
           <p>PERGUNTA {currentQuestion + 1}</p>
         </div>
         <div className={styles.score}>
           <p>{score}</p>
         </div>
-        <img
-          style={{
-            maxWidth: 360,
-          }}
-          src="https://res.cloudinary.com/dhgkpiqzg/image/upload/v1624295134/quemquerterliberdade.png"
-        ></img>
+        </div>
+        <Logo />
         {questionArray[currentQuestion] && questionArray[currentQuestion].answers.length > 0 && 
         <React.Fragment>
-          <h3>{questionArray[currentQuestion].question}</h3>
+          <h3 className={styles.question}>{questionArray[currentQuestion].question}</h3>
           <div
-            style={{
-              display: "flex",
-              width: 960,
-              justifyContent: "space-evenly",
-              alignItems: "center",
-            }}
+          className={styles.questionContainer}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button
@@ -128,6 +146,7 @@ export default function Home({ questionArray }) {
                 <b>{questionArray[currentQuestion].answers[1]}</b>
               </button>
             </div>
+        { questionArray[currentQuestion].answers.length > 2 &&
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button className={cc([
           styles.button,
@@ -150,6 +169,7 @@ export default function Home({ questionArray }) {
                 <b>{questionArray[currentQuestion].answers[3]}</b>
               </button>
             </div>
+        }
           </div>
         </React.Fragment>
       }
@@ -158,10 +178,10 @@ export default function Home({ questionArray }) {
   );
 }
 
-export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.API_HOST}/api/question`);
+export const getServerSideProps = async () => {
+  const res = await fetch(`${process.env.API_HOST}/api/questions`);
   const questionArray = await res.json();
   return {
-    props: { questionArray },
+    props: { questionArray, host: process.env.API_HOST },
   };
 };
