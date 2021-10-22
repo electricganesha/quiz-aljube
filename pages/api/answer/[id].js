@@ -6,6 +6,6 @@ export default async (req, res) => {
     const entriesData = entries.docs.map((entry) => entry.data());
     res.status(200).json(entriesData[0].answer);
   } catch(err) {
-    console.log("ERROR: ", err);
+    console.log(err);
   }
 };

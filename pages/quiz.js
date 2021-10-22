@@ -8,7 +8,7 @@ import TriviaOverlay from '../components/TriviaOverlay'
 
 const QUESTION_TIMEOUT = 2000;
 
-export default function Home({ questionArray, host }) {
+export default function Home({ questionArray, user, host }) {
   if(!questionArray) {
     return null;
   }
@@ -22,12 +22,13 @@ export default function Home({ questionArray, host }) {
 
   useEffect(() => {
     setCurrentQuestion(0);
-    window.sessionStorage.setItem("score", "0");
+    document.cookie = `user_id=${user.user_id};`;
+    window.sessionStorage.setItem("user_id", user.user_id);
+    window.sessionStorage.setItem("doc_id", user.doc_id);
   }, []);
 
   const onButtonPress = useCallback(
-    (answer) => {
-      
+    (answer) => {   
       setHasClicked(true);
       clearAnswers();
       checkAnswer(questionArray[currentQuestion].id, answer);
@@ -44,7 +45,10 @@ export default function Home({ questionArray, host }) {
 
     const timeout = setTimeout(async function(){
       if(correctAnswer !== null) {
+        updateUser(score + 1);
         await addPointToScore();
+      } else {
+        updateUser(score);
       }
 
       if(questionArray[currentQuestion].hasTrivia) {
@@ -58,13 +62,14 @@ export default function Home({ questionArray, host }) {
     return () => clearTimeout(timeout);
   }, [correctAnswer, incorrectAnswer]);
 
-  const goToNextQuestion = useCallback(() => {
+  const goToNextQuestion = useCallback(async() => {
     clearAnswers();
     setHasClicked(false);
     if(currentQuestion < questionArray.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       return;
     } else {
+      updateUser(score + 1, true);
       router.push('/gameover');
     }
   }, [currentQuestion, questionArray]);
@@ -72,7 +77,6 @@ export default function Home({ questionArray, host }) {
   const addPointToScore = useCallback(async() => {
     const newScore = score + 1;
     setScore(newScore);
-    window.sessionStorage.setItem("score", `${newScore}`);
   }, [score]);
 
   const clearAnswers = useCallback(() => {
@@ -95,6 +99,18 @@ export default function Home({ questionArray, host }) {
   const onCloseTriviaOverlay = useCallback(async () => {
     setIsTriviaShowing(false);
     goToNextQuestion();
+  });
+
+  const updateUser = useCallback(async(aScore, sessionClosed) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user/update`, {
+      method: "POST",
+      body: JSON.stringify({
+          doc_id: window.sessionStorage.getItem('doc_id'),
+          currentQuestion: currentQuestion + 1,
+          score: aScore,
+          ...sessionClosed && { session_closed: sessionClosed }
+      }),
+    });
   });
 
   if(isTriviaShowing) {
@@ -179,9 +195,12 @@ export default function Home({ questionArray, host }) {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`${process.env.API_HOST}/api/questions`);
-  const questionArray = await res.json();
+  const userResponse = await fetch(`${process.env.API_HOST}/api/user/create`);
+  const userContent = await userResponse.json();
+
+  const questionsResponse = await fetch(`${process.env.API_HOST}/api/questions`);
+  const questionArray = await questionsResponse.json();
   return {
-    props: { questionArray, host: process.env.API_HOST },
+    props: { questionArray, host: process.env.API_HOST, user: userContent.user },
   };
 };

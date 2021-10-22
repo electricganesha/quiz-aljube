@@ -1,12 +1,12 @@
 import styles from "../styles/Home.module.scss";
-import GameOverView from '../components/GameOverView';
+import WinnerForm from '../components/WinnerForm';
 import cookies from "next-cookies";
 
-export default function GameOver({ user }) {
+export default function Winner({ user }) {
   return (
     <div className={styles.container}>
       <main>
-       <GameOverView user={user} />
+       <WinnerForm user={user} />
       </main>
     </div>
   );

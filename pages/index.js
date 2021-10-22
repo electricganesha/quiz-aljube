@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import Logo from '../components/Logo';
@@ -5,6 +6,13 @@ import Button from '../components/Button';
 
 export default function Home() {
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("deleting cookies");
+    document.cookie = `user_id=; domain=*`;
+    document.cookie = `doc_id=; domain=*`;
+  }, []);
+  
 
   return (
     <div className={styles.container}>

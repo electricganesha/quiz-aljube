@@ -8,6 +8,6 @@ export default async (req, res) => {
     const shuffledArray = shuffle(entriesData);
     res.status(200).json(shuffledArray.splice(0, 10));
   } catch(err) {
-    console.log("ERROR: ", err);
+    console.log(err);
   }
 };

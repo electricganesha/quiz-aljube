@@ -19,6 +19,11 @@
     width: 40px;
     position: absolute;
     transition: all 1s ease-in-out;
+
+    @media only screen and (max-width: 480px) {
+        margin-top: -20px;
+        margin-left: -20px;
+    }
 }
 
 @keyframes spinner {
