@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default async (req, res) => {
   try {
-    console.log("CREATING USER");
     const user_id = uuidv4();
     const session_start = new Date();
     var doc = db.collection('users').doc();

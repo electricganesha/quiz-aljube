@@ -8,7 +8,6 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("deleting cookies");
     document.cookie = `user_id=; domain=*`;
     document.cookie = `doc_id=; domain=*`;
   }, []);
