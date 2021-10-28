@@ -1,15 +1,19 @@
 import styles from "../styles/Quiz.module.scss";
 import { useCallback, useState, useEffect } from "react";
 import cc from "classcat";
-import  React from 'react';
+import React from 'react';
 import router from "next/router";
-import Logo from '../components/Logo';
-import TriviaOverlay from '../components/TriviaOverlay'
+import TriviaOverlay from '../components/TriviaOverlay';
+import QuizHeader from '../components/QuizHeader';
+import HexagonalDiv from "../components/HexagonalDiv";
+import RectangularDiv from "../components/RectangularDiv";
+import AnswerBlock from "../components/AnswerBlock";
+import Answer from "../components/Answer";
 
 const QUESTION_TIMEOUT = 2000;
 
 export default function Home({ questionArray, user, host }) {
-  if(!questionArray) {
+  if (!questionArray) {
     return null;
   }
 
@@ -28,44 +32,44 @@ export default function Home({ questionArray, user, host }) {
   }, []);
 
   const onButtonPress = useCallback(
-    (answer) => {   
+    (answer) => {
       setHasClicked(true);
       clearAnswers();
       checkAnswer(questionArray[currentQuestion].id, answer);
-      
+
       return;
     },
     [currentQuestion]
   );
 
   useEffect(() => {
-    if(correctAnswer === null && incorrectAnswer === null) {
+    if (correctAnswer === null && incorrectAnswer === null) {
       return;
     }
 
-    const timeout = setTimeout(async function(){
-      if(correctAnswer !== null) {
+    const timeout = setTimeout(async function () {
+      if (correctAnswer !== null) {
         updateUser(score + 1);
         await addPointToScore();
       } else {
         updateUser(score);
       }
 
-      if(questionArray[currentQuestion].hasTrivia) {
+      if (questionArray[currentQuestion].hasTrivia) {
         setIsTriviaShowing(true);
         return;
       }
-      
+
       goToNextQuestion();
     }, QUESTION_TIMEOUT)
 
     return () => clearTimeout(timeout);
   }, [correctAnswer, incorrectAnswer]);
 
-  const goToNextQuestion = useCallback(async() => {
+  const goToNextQuestion = useCallback(async () => {
     clearAnswers();
     setHasClicked(false);
-    if(currentQuestion < questionArray.length - 1) {
+    if (currentQuestion < questionArray.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       return;
     } else {
@@ -74,7 +78,7 @@ export default function Home({ questionArray, user, host }) {
     }
   }, [currentQuestion, questionArray]);
 
-  const addPointToScore = useCallback(async() => {
+  const addPointToScore = useCallback(async () => {
     const newScore = score + 1;
     setScore(newScore);
   }, [score]);
@@ -101,94 +105,62 @@ export default function Home({ questionArray, user, host }) {
     goToNextQuestion();
   });
 
-  const updateUser = useCallback(async(aScore, sessionClosed) => {
+  const updateUser = useCallback(async (aScore, sessionClosed) => {
     await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user/update`, {
       method: "POST",
       body: JSON.stringify({
-          doc_id: window.sessionStorage.getItem('doc_id'),
-          currentQuestion: currentQuestion + 1,
-          score: aScore,
-          ...sessionClosed && { session_closed: sessionClosed }
+        doc_id: window.sessionStorage.getItem('doc_id'),
+        currentQuestion: currentQuestion + 1,
+        score: aScore,
+        ...sessionClosed && { session_closed: sessionClosed }
       }),
     });
   });
 
-  if(isTriviaShowing) {
-    return ( 
-      <TriviaOverlay id={questionArray[currentQuestion].id} host={host} onCloseTriviaOverlay={onCloseTriviaOverlay}/>
+  if (isTriviaShowing) {
+    return (
+      <TriviaOverlay id={questionArray[currentQuestion].id} host={host} onCloseTriviaOverlay={onCloseTriviaOverlay} />
     )
   }
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <div className={styles.questionHeader}>
-        <div className={styles.info}>
-          <p>PERGUNTA {currentQuestion + 1}</p>
-        </div>
-        <div className={styles.score}>
-          <p>{score}</p>
-        </div>
-        </div>
-        <Logo />
-        {questionArray[currentQuestion] && questionArray[currentQuestion].answers.length > 0 && 
-        <React.Fragment>
-          <h3 className={styles.question}>{questionArray[currentQuestion].question}</h3>
-          <div
-          className={styles.questionContainer}
-          >
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <button
-                className={cc([
-                  styles.button,
-                  {
-                    [styles[`button__correct`]]: correctAnswer === 0,
-                    [styles['button__incorrect']] : incorrectAnswer === 0
-                  },
-                ])}
-                onClick={() => onButtonPress(0)}
-                disabled={hasClicked}
-              >
-                <b>{questionArray[currentQuestion].answers[0]}</b>
-              </button>
-              <button className={cc([
-          styles.button,
-          {
-            [styles[`button__correct`]]: correctAnswer === 1,
-            [styles['button__incorrect']] : incorrectAnswer === 1
-          },
-        ])} onClick={() => onButtonPress(1)}
-        disabled={hasClicked}>
-                <b>{questionArray[currentQuestion].answers[1]}</b>
-              </button>
-            </div>
-        { questionArray[currentQuestion].answers.length > 2 &&
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <button className={cc([
-          styles.button,
-          {
-            [styles[`button__correct`]]: correctAnswer === 2,
-            [styles['button__incorrect']] : incorrectAnswer === 2
-          },
-        ])} onClick={() => onButtonPress(2)}
-        disabled={hasClicked}>
-                <b>{questionArray[currentQuestion].answers[2]}</b>
-              </button>
-              <button className={cc([
-          styles.button,
-          {
-            [styles[`button__correct`]]: correctAnswer === 3,
-            [styles['button__incorrect']] : incorrectAnswer === 3
-          },
-        ])} onClick={() => onButtonPress(3)}
-        disabled={hasClicked}>
-                <b>{questionArray[currentQuestion].answers[3]}</b>
-              </button>
-            </div>
+        <QuizHeader score={score} currentQuestion={currentQuestion + 1} />
+        {questionArray[currentQuestion] && questionArray[currentQuestion].answers.length > 0 &&
+          <React.Fragment>
+            <RectangularDiv hasConnectors={true} theme="original">
+              {questionArray[currentQuestion].question}
+            </RectangularDiv>
+            <AnswerBlock
+              answers={questionArray[currentQuestion].answers.length <= 2 ?
+                [
+                  <Answer onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
+                    {questionArray[currentQuestion].answers[0]}
+                  </Answer>,
+                  <Answer onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
+                    {questionArray[currentQuestion].answers[1]}
+                  </Answer>
+                ]
+                :
+                [
+                  <Answer onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
+                    {questionArray[currentQuestion].answers[0]}
+                  </Answer>,
+                  <Answer onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
+                    {questionArray[currentQuestion].answers[1]}
+                  </Answer>,
+                  <Answer onClick={() => onButtonPress(2)} correctAnswer={correctAnswer === 2} incorrectAnswer={incorrectAnswer === 2}>
+                    {questionArray[currentQuestion].answers[2]}
+                  </Answer>,
+                  <Answer onClick={() => onButtonPress(3)} correctAnswer={correctAnswer === 3} incorrectAnswer={incorrectAnswer === 3}>
+                    {questionArray[currentQuestion].answers[3]}
+                  </Answer>
+                ]
+              }
+            />
+          </React.Fragment>
         }
-          </div>
-        </React.Fragment>
-      }
       </main>
     </div>
   );

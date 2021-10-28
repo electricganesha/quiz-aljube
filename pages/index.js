@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import Logo from '../components/Logo';
-import Button from '../components/Button';
+import HexagonalDiv from '../components/HexagonalDiv';
+import AnswerBlock from '../components/AnswerBlock';
+import Answer from '../components/Answer';
 
 export default function Home() {
   const router = useRouter();
@@ -11,7 +13,6 @@ export default function Home() {
     document.cookie = `user_id=; domain=*`;
     document.cookie = `doc_id=; domain=*`;
   }, []);
-  
 
   return (
     <div className={styles.container}>
@@ -26,11 +27,11 @@ export default function Home() {
           e gamificada, convidando-os através de um sistema de recompensas, a
           visitar e partilhar as suas experiências no museu do Aljube.
         </p>
-        <Button onClick={() => {
+        <HexagonalDiv onClick={() => {
           router.push("/quiz")
-          }} theme="primary">
+          }} hasConnectors={true} theme="glow">
           Iniciar Jogo
-        </Button>
+        </HexagonalDiv>
       </main>
     </div>
   );

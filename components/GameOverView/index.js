@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Logo from '../Logo';
 import styles from './GameOverView.module.scss';
 import { useRouter } from "next/router";
+import HexagonalDiv from '../HexagonalDiv';
 
 const GameOverView = ({ user }) => {
     const [shouldRender, setShouldRender] = useState(false);
@@ -29,14 +30,12 @@ const GameOverView = ({ user }) => {
             {score === 10 ?
                 <React.Fragment>
                     <p>Parab&eacute;ns, acertaste em todas as perguntas o que significa que sabes bastante sobre o tema! O teu conhecimento extenso acabou de te ganhar bilhetes gratuitos para visitar o museu do Aljube. Para avançar, clica no bot&atilde;o abaixo.</p>
-                    <button className={styles.button} onClick={() => router.push("/winner")}>
-                        Reclamar o meu bilhete
-                    </button>
+                    <HexagonalDiv theme="glow" hasConnectors={true} onClick={() => router.push("/winner")}>Reclamar o meu bilhete</HexagonalDiv> 
                 </React.Fragment>
                 : null}
-            <button className={styles.button} onClick={() => router.push("/")}>
-                Voltar ao inicio
-            </button>
+                <div style={{ marginTop: 48 }}>
+                <HexagonalDiv theme="glow" hasConnectors={true} onClick={() => router.push("/")}>Voltar ao inicio</HexagonalDiv>
+                </div>
         </div>
     );
 }

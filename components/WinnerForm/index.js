@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Logo from '../Logo';
 import styles from './WinnerForm.module.scss';
 import { useRouter } from "next/router";
+import HexagonalDiv from '../HexagonalDiv';
 
 const WinnerForm = ({ user }) => {
     const [score, setScore] = useState(null);
@@ -80,7 +81,7 @@ const WinnerForm = ({ user }) => {
         <div className={styles.winner}>
             <Logo />
             <h1>Parab&eacute;ns!</h1>
-            <p>Por favor introduz os teus dados para registarmos a tua inscri&ccedil;&atilde;o no sistema do <a href="https://www.museudoaljube.pt/servico-educativo/visitas/">EducAljube</a>.</p>
+            <p>Por favor introduz os teus dados para registarmos a tua inscri&ccedil;&atilde;o no sistema do <a target="_blank" href="https://www.museudoaljube.pt/servico-educativo/visitas/">EducAljube</a>.</p>
             <p>Em breve, o museu ir&aacute; entrar em contacto contigo para te facultar bilhetes gratuitos para o museu do Aljube.</p>
             <form>
                 <input
@@ -115,9 +116,11 @@ const WinnerForm = ({ user }) => {
 
                 
             </form>
-            <button className={styles.button} onClick={() => submitData()}>
+            <div style={{ marginTop: 48 }}>
+            <HexagonalDiv hasConnectors={true} theme="glow" onClick={() => submitData()}>
                     Submeter
-            </button>
+            </HexagonalDiv>
+            </div>
         </div>
     );
 }

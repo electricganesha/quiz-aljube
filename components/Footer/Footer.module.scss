@@ -1,10 +1,13 @@
 .footer {
     width: 100%;
-    color: #4b0565;
+    color: white;
+    margin-top: 48px;
     padding: 24px 0;
-    border-top: 2px solid #4b0565;
+    border-top: 2px solid white;
     text-align: center;
     font-size: 14px;
+    background-color: #120235;
+    text-shadow: white 1px 0 5px;
 
     @media screen and (min-width: 768px) {
         font-size: 16px;
