@@ -23,7 +23,8 @@ const Answer = ({ children, onClick, correctAnswer, incorrectAnswer }) => {
                     [styles["hexagon__incorrect"]]: incorrectAnswer,
                }
            ])}>
-           <span className={styles.diamond}>⬥</span>{ children }
+           <span className={styles.diamond}>⬥</span>
+           <span className={styles.answer}>{ children }</span>
            </div>
            <div  className={cc([
                styles.triangleRight,

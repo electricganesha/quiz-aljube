@@ -67,7 +67,7 @@
     margin-top: 6px;
     border-top: none;
     border-right: none;
-    transition: 300ms all; 
+    transition: 300ms all;
     
     &__correct {
         background-color: #55c31e;
@@ -147,4 +147,9 @@
 .diamond {
     font-size: 14px;
     margin-right: 8px;
+    z-index: 999;
+}
+
+.answer {
+    z-index: 999;
 }
