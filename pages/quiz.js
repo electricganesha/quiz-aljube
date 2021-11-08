@@ -97,6 +97,7 @@ export default function Home({ questionArray, user, host }) {
       return;
     }
 
+    setCorrectAnswer(remoteAnswer);
     setIncorrectAnswer(answer);
   }, []);
 
