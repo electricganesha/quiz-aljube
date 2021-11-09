@@ -112,7 +112,7 @@ export default function Home({ questionArray, user, host }) {
     const res = await fetch(`${host}/api/answer/${id}`);
     const remoteAnswer = await res.json();
 
-    if(!answer) {
+    if(answer === undefined) {
       setCorrectAnswer(remoteAnswer);
       setIncorrectAnswer('timeout');
       return;
