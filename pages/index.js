@@ -3,8 +3,6 @@ import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import Logo from '../components/Logo';
 import HexagonalDiv from '../components/HexagonalDiv';
-import AnswerBlock from '../components/AnswerBlock';
-import Answer from '../components/Answer';
 
 export default function Home() {
   const router = useRouter();
@@ -19,13 +17,8 @@ export default function Home() {
       <main className={styles.main}>
         <Logo />
         <p className={styles.intro}>
-          No âmbito do projecto Setenta & Quatro, pretende-se criar uma web-app
-          que funcione como um jogo de perguntas (quiz) com a temática histórica
-          do período do Estado Novo em Portugal e dos eventos do 25 de Abril de
-          1974, com o objectivo de factualmente (com conteúdo validado de forma
-          científica) informar e esclarecer os jogadores de uma forma divertida
-          e gamificada, convidando-os através de um sistema de recompensas, a
-          visitar e partilhar as suas experiências no museu do Aljube.
+          Museu do Aljube Resistência e Liberdade desafia-te a explorar a história da resistência à ditadura e da luta pela liberdade em Portugal. 
+          Participa no jogo  “A Liberdade não é um quiz”  e se conseguires responder corretamente às 10 perguntas, ganhas uma entrada grátis no Museu!
         </p>
         <HexagonalDiv onClick={() => {
           router.push("/quiz")
