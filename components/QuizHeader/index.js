@@ -3,10 +3,11 @@ import Logo from '../Logo';
 import HexagonalDiv from '../HexagonalDiv';
 import styles from './QuizHeader.module.scss'
 
-const QuizHeader = ({ score, currentQuestion }) => {
+const QuizHeader = ({ score, currentQuestion, timer }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.topRow}>
+        <span className={styles.timer}>{timer}</span>
         <HexagonalDiv theme="glow">
             <span>PONTUA&Ccedil;&Atilde;O: {score}</span>
         </HexagonalDiv>

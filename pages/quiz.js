@@ -1,16 +1,15 @@
 import styles from "../styles/Quiz.module.scss";
 import { useCallback, useState, useEffect } from "react";
-import cc from "classcat";
 import React from 'react';
 import router from "next/router";
 import TriviaOverlay from '../components/TriviaOverlay';
 import QuizHeader from '../components/QuizHeader';
-import HexagonalDiv from "../components/HexagonalDiv";
 import RectangularDiv from "../components/RectangularDiv";
 import AnswerBlock from "../components/AnswerBlock";
 import Answer from "../components/Answer";
 
 const QUESTION_TIMEOUT = 2000;
+const COUNTDOWN_TIMER = 30;
 
 export default function Home({ questionArray, user, host }) {
   if (!questionArray) {
@@ -24,11 +23,31 @@ export default function Home({ questionArray, user, host }) {
   const [score, setScore] = useState(0);
   const [isTriviaShowing, setIsTriviaShowing] = useState(false);
 
+  const [timeLeft, setTimeLeft] = useState(COUNTDOWN_TIMER);
+
   useEffect(() => {
     setCurrentQuestion(0);
     document.cookie = `user_id=${user.user_id};`;
     window.sessionStorage.setItem("user_id", user.user_id);
     window.sessionStorage.setItem("doc_id", user.doc_id);
+  }, []);
+
+  useEffect(() => {
+    if (!timeLeft) return;
+    
+    if(timeLeft <= 1) {
+      checkAnswer(questionArray[currentQuestion].id);
+    }
+
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+  const resetTimer = useCallback(() => {
+    setTimeLeft(COUNTDOWN_TIMER);
   }, []);
 
   const onButtonPress = useCallback(
@@ -48,7 +67,7 @@ export default function Home({ questionArray, user, host }) {
     }
 
     const timeout = setTimeout(async function () {
-      if (correctAnswer !== null) {
+      if (correctAnswer !== null && incorrectAnswer === null) {
         updateUser(score + 1);
         await addPointToScore();
       } else {
@@ -71,6 +90,7 @@ export default function Home({ questionArray, user, host }) {
     setHasClicked(false);
     if (currentQuestion < questionArray.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
+      resetTimer();
       return;
     } else {
       updateUser(score + 1, true);
@@ -92,8 +112,15 @@ export default function Home({ questionArray, user, host }) {
     const res = await fetch(`${host}/api/answer/${id}`);
     const remoteAnswer = await res.json();
 
+    if(!answer) {
+      setCorrectAnswer(remoteAnswer);
+      setIncorrectAnswer('timeout');
+      return;
+    }
+
     if (answer === remoteAnswer) {
       setCorrectAnswer(answer);
+      setIncorrectAnswer(null);
       return;
     }
 
@@ -127,7 +154,7 @@ export default function Home({ questionArray, user, host }) {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <QuizHeader score={score} currentQuestion={currentQuestion + 1} />
+        <QuizHeader score={score} currentQuestion={currentQuestion + 1} timer={timeLeft}/>
         {questionArray[currentQuestion] && questionArray[currentQuestion].answers.length > 0 &&
           <React.Fragment>
             <RectangularDiv hasConnectors={true} theme="original">
