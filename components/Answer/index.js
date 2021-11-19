@@ -3,11 +3,11 @@ import { Textfit } from 'react-textfit';
 import styles from './Answer.module.scss';
 import cc from "classcat";
 
-const Answer = ({ children, onClick, correctAnswer, incorrectAnswer }) => {
+const Answer = ({ children, onClick, correctAnswer, incorrectAnswer, disabled }) => {
     const [isHovering, setIsHovering] = useState(false);
 
     return (
-        <div onClick={() => onClick()} className={styles.wrapper} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)}>
+        <div disabled={disabled} onClick={() => onClick()} className={styles.wrapper} onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)}>
             <div className={cc([
                 styles.triangleLeft,
                 {

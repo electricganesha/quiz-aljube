@@ -87,10 +87,10 @@ export default function Home({ questionArray, user, host }) {
 
   const goToNextQuestion = useCallback(async () => {
     clearAnswers();
-    setHasClicked(false);
     if (currentQuestion < questionArray.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       resetTimer();
+      setHasClicked(false);
       return;
     } else {
       updateUser(score + 1, true);
@@ -163,25 +163,25 @@ export default function Home({ questionArray, user, host }) {
             <AnswerBlock
               answers={questionArray[currentQuestion].answers.length <= 2 ?
                 [
-                  <Answer onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
                     {questionArray[currentQuestion].answers[0]}
                   </Answer>,
-                  <Answer onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
                     {questionArray[currentQuestion].answers[1]}
                   </Answer>
                 ]
                 :
                 [
-                  <Answer onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(0)} correctAnswer={correctAnswer === 0} incorrectAnswer={incorrectAnswer === 0}>
                     {questionArray[currentQuestion].answers[0]}
                   </Answer>,
-                  <Answer onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(1)} correctAnswer={correctAnswer === 1} incorrectAnswer={incorrectAnswer === 1}>
                     {questionArray[currentQuestion].answers[1]}
                   </Answer>,
-                  <Answer onClick={() => onButtonPress(2)} correctAnswer={correctAnswer === 2} incorrectAnswer={incorrectAnswer === 2}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(2)} correctAnswer={correctAnswer === 2} incorrectAnswer={incorrectAnswer === 2}>
                     {questionArray[currentQuestion].answers[2]}
                   </Answer>,
-                  <Answer onClick={() => onButtonPress(3)} correctAnswer={correctAnswer === 3} incorrectAnswer={incorrectAnswer === 3}>
+                  <Answer disabled={hasClicked} onClick={() => onButtonPress(3)} correctAnswer={correctAnswer === 3} incorrectAnswer={incorrectAnswer === 3}>
                     {questionArray[currentQuestion].answers[3]}
                   </Answer>
                 ]
