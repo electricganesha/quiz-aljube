@@ -25,11 +25,11 @@ const GameOverView = ({ user }) => {
     return (
         <div className={styles.gameover}>
             <Logo />
-            <h1>Obrigado por teres jogado!</h1>
-            <p>Acertaste em {score} perguntas de um total de 10</p>
+            <h1>Obrigado por teres jogado.</h1>
+            <p>Acertaste em {score} perguntas de um total de 10. Tenta novamente e ganha a tua entrada grátis no Museu do Aljube!</p>
             {score === 10 ?
                 <React.Fragment>
-                    <p>Parab&eacute;ns, acertaste em todas as perguntas o que significa que sabes bastante sobre o tema! O teu conhecimento extenso acabou de te ganhar bilhetes gratuitos para visitar o museu do Aljube. Para avançar, clica no bot&atilde;o abaixo.</p>
+                    <p>Parab&eacute;ns, acertaste em todas as perguntas! O teu conhecimento extenso acabou de te ganhar bilhetes gratuitos para visitar o museu do Aljube. Para avançar, clica no bot&atilde;o abaixo.</p>
                     <HexagonalDiv theme="glow" hasConnectors={true} onClick={() => router.push("/winner")}>Reclamar o meu bilhete</HexagonalDiv> 
                 </React.Fragment>
                 : null}
