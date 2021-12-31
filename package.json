@@ -10,6 +10,7 @@
   "dependencies": {
     "classcat": "^5.0.3",
     "date-fns": "^2.25.0",
+    "export-to-csv": "^0.2.1",
     "firebase-admin": "^9.9.0",
     "framer-motion": "^4.1.17",
     "next": "10.2.3",
