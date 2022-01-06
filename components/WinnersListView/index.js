@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './WinnersListView.module.scss';
-import { ExportToCsv } from 'export-to-csv';
+import exportFromJSON from 'export-from-json';
 import format from 'date-fns/format';
 
 const WinnersListView = () => {
@@ -35,30 +35,35 @@ const WinnersListView = () => {
 
     const downloadCSV = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/winners`);
-        const json = await response.json();
+        const data = await response.json();
 
-        const options = {
-            fieldSeparator: ',',
-            quoteStrings: '"',
-            decimalSeparator: '.',
-            showLabels: true,
-            showTitle: true,
-            title: `Vencedores Quiz Liberdade ${format(
-            new Date(),
-            "dd/MM/yyyy",
-          )}`,
-            useTextFile: false,
-            useBom: true,
-            useKeysAsHeaders: true,
-            filename: `vencedores-quiz-${format(
+        const fileName = `vencedores-quiz-${format(
             new Date(),
             "dd-MM-yyyy",
-          )}`
-        };
+        )}`;
+
+        const exportType = exportFromJSON.types.csv;
 
         try {
-            const csvExporter = new ExportToCsv(options);
-            csvExporter.generateCsv(json);
+            exportFromJSON({ data, fileName, exportType });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const downloadXLS = async () => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/winners`);
+        const data = await response.json();
+
+        const fileName = `vencedores-quiz-${format(
+            new Date(),
+            "dd-MM-yyyy",
+        )}`;
+
+        const exportType = exportFromJSON.types.xls;
+
+        try {
+            exportFromJSON({ data, fileName, exportType });
         } catch (err) {
             console.error(err);
         }
@@ -79,7 +84,8 @@ const WinnersListView = () => {
                 : isAuthorised &&
                 <div className={styles.adminPanel}>
                     Bem-vindo <b>{username}</b>
-                    <div onClick={downloadCSV} className={styles.adminPanel__button} >Descarregar vencedores.csv</div>
+                    <div onClick={downloadCSV} className={styles.adminPanel__button} >Descarregar CSV</div>
+                    <div onClick={downloadXLS} className={styles.adminPanel__button} >Descarregar XLS</div>
                 </div>
             }
         </div>
